@@ -41,7 +41,7 @@ namespace Dnsy.Api.Controllers
         };
 
         [HttpGet("{query}")]
-        public async Task<LookupResponse> Lookup ([FromRoute] string query, [FromQuery] bool extended = false)
+        public async Task<LookupResponse> Lookup ([FromRoute] string query, [FromQuery] bool extended = true)
         {
             var time = DateTimeOffset.UtcNow;
             var hostEntry = await _dns.GetHostEntryAsync(query);
