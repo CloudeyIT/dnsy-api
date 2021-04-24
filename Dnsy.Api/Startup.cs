@@ -21,6 +21,7 @@ namespace Dnsy.Api
         public void ConfigureServices (IServiceCollection services)
         {
             services.AddApplicationInsightsTelemetry();
+            services.AddHealthChecks();
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Dnsy.Api", Version = "v1"}); });
 
@@ -53,7 +54,11 @@ namespace Dnsy.Api
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
+            });
         }
     }
 }
