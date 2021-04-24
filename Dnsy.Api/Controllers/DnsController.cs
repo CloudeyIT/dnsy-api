@@ -43,6 +43,7 @@ namespace Dnsy.Api.Controllers
         [HttpGet("{query}")]
         public async Task<LookupResponse> Lookup ([FromRoute] string query, [FromQuery] bool extended = false)
         {
+            var time = DateTimeOffset.UtcNow;
             var hostEntry = await _dns.GetHostEntryAsync(query);
 
             if (hostEntry is null)
@@ -51,6 +52,8 @@ namespace Dnsy.Api.Controllers
                 {
                     Query = query,
                     HostName = null,
+                    Time = time.DateTime.ToString("u"),
+                    Timestamp = time.ToUnixTimeSeconds(),
                     NameServer = _dns.NameServers.First().Address,
                 };
             }
@@ -61,6 +64,8 @@ namespace Dnsy.Api.Controllers
                 HostName = hostEntry.HostName,
                 Addresses = hostEntry.AddressList.Select(address => address.ToString()),
                 Aliases = hostEntry.Aliases,
+                Time = time.DateTime.ToString("u"),
+                Timestamp = time.ToUnixTimeSeconds(),
                 NameServer = _dns.NameServers.First().Address,
             };
             

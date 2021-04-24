@@ -1,17 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using DnsClient;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace Dnsy.Api
@@ -36,7 +28,8 @@ namespace Dnsy.Api
             );
             services.AddSingleton<ILookupClient>(lookupClient);
             services.AddCors(options => options.AddDefaultPolicy(policy => policy
-                .AllowAnyOrigin()
+                .WithOrigins(Configuration.GetSection("Origins").Get<string[]>())
+                .SetIsOriginAllowedToAllowWildcardSubdomains()
                 .AllowAnyMethod()
                 .AllowAnyHeader()
             ));

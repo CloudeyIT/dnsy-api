@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using DnsClient.Protocol;
 
@@ -9,6 +10,8 @@ namespace Dnsy.Api.Types
         public string Query { get; set; }
         public string HostName { get; set; }
         public string NameServer { get; set; }
+        public string Time { get; set; }
+        public long Timestamp { get; set; }
         public IEnumerable<string> Addresses { get; set; }
         public IEnumerable<string> Aliases { get; set; }
         public IEnumerable<ARecordResponse> A { get; set; }
