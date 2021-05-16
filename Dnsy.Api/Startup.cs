@@ -1,3 +1,5 @@
+using System;
+using System.Collections.ObjectModel;
 using DnsClient;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -29,9 +31,15 @@ namespace Dnsy.Api
                 .AddFluentValidation();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Dnsy.Api", Version = "v1"}); });
 
-            var lookupClient = new LookupClient(
-                NameServer.GooglePublicDns
-            );
+            var lookupClient = new LookupClient(new LookupClientOptions(
+                NameServer.Cloudflare,
+                NameServer.Cloudflare2
+            )
+            {
+                Timeout = TimeSpan.FromSeconds(2),
+                UseCache = false,
+                ContinueOnDnsError = true,
+            });
             services.AddSingleton<ILookupClient>(lookupClient);
             services.AddCors(options => options.AddDefaultPolicy(policy => policy
                 .WithOrigins(Configuration.GetSection("Origins").Get<string[]>())

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -30,7 +31,6 @@ namespace Dnsy.Api.Controllers
             QueryType.AAAA,
             QueryType.CNAME,
             QueryType.MX,
-            QueryType.PTR,
             QueryType.SOA,
             QueryType.NS,
             QueryType.SRV,
@@ -43,8 +43,12 @@ namespace Dnsy.Api.Controllers
         [HttpGet("{query}")]
         public async Task<LookupResponse> Lookup ([FromRoute] DnsQuery dnsQuery, [FromQuery] bool extended = true)
         {
+            var totalStopwatch = Stopwatch.StartNew();
+            
             var time = DateTimeOffset.UtcNow;
             var query = dnsQuery.Query;
+
+            var basicQueryStopwatch = Stopwatch.StartNew();
             
             var hostEntry = await _dns.GetHostEntryAsync(query);
 
@@ -60,6 +64,8 @@ namespace Dnsy.Api.Controllers
                 };
             }
             
+            basicQueryStopwatch.Stop();
+
             var response = new LookupResponse
             {
                 Query = query,
@@ -69,21 +75,26 @@ namespace Dnsy.Api.Controllers
                 Time = time.DateTime.ToString("u"),
                 Timestamp = time.ToUnixTimeSeconds(),
                 NameServer = _dns.NameServers.First().Address,
+                BasicQueryDuration = basicQueryStopwatch.ElapsedMilliseconds,
             };
             
             if (!extended)
             {
+                totalStopwatch.Stop();
+                response.TotalQueryDuration = totalStopwatch.ElapsedMilliseconds;
                 return response;
             }
             
             var questions = _queryTypes.Select(type => new DnsQuestion(hostEntry.HostName, type)).ToArray();
             var resultBag = new ConcurrentBag<IDnsQueryResponse>();
+            var extendedQueryStopwatch = Stopwatch.StartNew();
             var tasks = questions.Select(async question =>
             {
                 var result = await _dns.QueryAsync(question);
                 resultBag.Add(result);
             });
             await Task.WhenAll(tasks);
+            extendedQueryStopwatch.Stop();
             var results = resultBag.ToArray();
             
             var extendedResponse = response with
@@ -144,14 +155,6 @@ namespace Dnsy.Api.Controllers
                         RName = record.RName,
                         Serial = record.Serial,
                     }),
-                Ptr = results.First(result => result.Questions[0].QuestionType == QueryType.PTR)
-                    .Answers.PtrRecords().Select(record => new PtrRecordResponse
-                    {
-                        DomainName = record.DomainName.Value,
-                        TTL = record.InitialTimeToLive,
-                        Raw = record.ToString(),
-                        PtrDomainName = record.PtrDomainName,
-                    }),
                 Ns = results.First(result => result.Questions[0].QuestionType == QueryType.NS)
                     .Answers.NsRecords().Select(record => new NsRecordResponse
                     {
@@ -204,6 +207,10 @@ namespace Dnsy.Api.Controllers
                         Tag = record.Tag,
                     }),
             };
+
+            extendedResponse.ExtendedQueryDuration = extendedQueryStopwatch.ElapsedMilliseconds;
+            totalStopwatch.Stop();
+            extendedResponse.TotalQueryDuration = totalStopwatch.ElapsedMilliseconds;
 
             return extendedResponse;
         }

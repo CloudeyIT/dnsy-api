@@ -12,6 +12,9 @@ namespace Dnsy.Api.Types
         public string NameServer { get; set; }
         public string Time { get; set; }
         public long Timestamp { get; set; }
+        public long BasicQueryDuration { get; set; }
+        public long ExtendedQueryDuration { get; set; }
+        public long TotalQueryDuration { get; set; }
         public IEnumerable<string> Addresses { get; set; }
         public IEnumerable<string> Aliases { get; set; }
         public IEnumerable<ARecordResponse> A { get; set; }
@@ -20,7 +23,6 @@ namespace Dnsy.Api.Types
         public IEnumerable<MxRecordResponse> Mx { get; set; }
         public IEnumerable<TxtRecordResponse> Txt { get; set; }
         public IEnumerable<SoaRecordResponse> Soa { get; set; }
-        public IEnumerable<PtrRecordResponse> Ptr { get; set; }
         public IEnumerable<NsRecordResponse> Ns { get; set; }
         public IEnumerable<SrvRecordResponse> Srv { get; set; }
         public IEnumerable<DnskeyRecordResponse> Dnskey { get; set; }
@@ -71,11 +73,6 @@ namespace Dnsy.Api.Types
         public uint Serial { get; set; }
         public string MName { get; set; }
         public string RName { get; set; }
-    }
-
-    public record PtrRecordResponse : RecordResponse
-    {
-        public string PtrDomainName { get; set; }
     }
 
     public record NsRecordResponse : RecordResponse
