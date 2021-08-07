@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  dnsy.api:
+    image: ${DOCKER_REGISTRY-}dnsyapi
+    build:
+      context: .
+      dockerfile: Dnsy.Api/Dockerfile
