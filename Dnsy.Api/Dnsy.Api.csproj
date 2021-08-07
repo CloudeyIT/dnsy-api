@@ -3,8 +3,6 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-        <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
-        <UserSecretsId>90059840-7b53-4b47-90cb-d1234250331f</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,7 +10,6 @@
         <PackageReference Include="FluentValidation" Version="10.1.0" />
         <PackageReference Include="FluentValidation.AspNetCore" Version="10.1.0" />
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.17.0" />
-        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.14" />
         <PackageReference Include="morelinq" Version="3.3.2" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     </ItemGroup>
