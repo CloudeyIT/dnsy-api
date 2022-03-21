@@ -14,7 +14,7 @@ namespace Dnsy.Api
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup (IConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -22,37 +22,44 @@ namespace Dnsy.Api
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices (IServiceCollection services)
         {
             services.AddApplicationInsightsTelemetry();
             services.AddHealthChecks();
             services.AddMvc()
                 .AddControllersAsServices()
                 .AddFluentValidation();
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Dnsy.Api", Version = "v1"}); });
+            services.AddSwaggerGen(
+                c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Dnsy.Api", Version = "v1" }); }
+            );
 
-            var lookupClient = new LookupClient(new LookupClientOptions(
-                NameServer.Cloudflare,
-                NameServer.Cloudflare2
-            )
-            {
-                Timeout = TimeSpan.FromSeconds(2),
-                UseCache = false,
-                ContinueOnDnsError = true,
-            });
+            var lookupClient = new LookupClient(
+                new LookupClientOptions(
+                    NameServer.Cloudflare,
+                    NameServer.Cloudflare2
+                )
+                {
+                    Timeout = TimeSpan.FromSeconds(2),
+                    UseCache = false,
+                    ContinueOnDnsError = true,
+                }
+            );
             services.AddSingleton<ILookupClient>(lookupClient);
-            services.AddCors(options => options.AddDefaultPolicy(policy => policy
-                .WithOrigins(Configuration.GetSection("Origins").Get<string[]>())
-                .SetIsOriginAllowedToAllowWildcardSubdomains()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-            ));
+            services.AddCors(
+                options => options.AddDefaultPolicy(
+                    policy => policy
+                        .WithOrigins(Configuration.GetSection("Origins").Get<string[]>())
+                        .SetIsOriginAllowedToAllowWildcardSubdomains()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                )
+            );
 
             services.AddValidatorsFromAssemblyContaining<Program>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure (IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -67,11 +74,13 @@ namespace Dnsy.Api
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-                endpoints.MapHealthChecks("/health");
-            });
+            app.UseEndpoints(
+                endpoints =>
+                {
+                    endpoints.MapControllers();
+                    endpoints.MapHealthChecks("/health");
+                }
+            );
         }
     }
 }
