@@ -27,6 +27,20 @@ spec:
         envFrom:
           - configMapRef:
               name: dnsy-api-config
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          timeoutSeconds: 8
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 3
+          periodSeconds: 5
+          timeoutSeconds: 8
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       imagePullSecrets:
