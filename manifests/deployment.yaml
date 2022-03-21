@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dnsy-api-deployment
+  namespace: dnsy
+  labels:
+    app: dnsy-api
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: dnsy-api
+  template:
+    metadata:
+      labels:
+        app: dnsy-api
+    spec:
+      containers:
+      - name: dnsy-api
+        image: ghcr.io/cloudeyit/dnsy-api:latest
+        imagePullPolicy: Always
+        volumeMounts:
+          - name: dnsy-api-storage
+            mountPath: /storage
+        envFrom:
+          - configMapRef:
+              name: dnsy-api-config
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: regcred-ghcr
+      volumes:
+        - name: dnsy-api-storage
+          persistentVolumeClaim:
+            claimName: dnsy-api-storage-pvc

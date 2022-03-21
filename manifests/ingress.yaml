@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dnsy-api-ingress
+  namespace: dnsy
+spec:
+  rules:
+    - host: api.dnsy.co
+      http:
+        paths:
+          - backend:
+              service:
+                name: dnsy-api-service
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - api.dnsy.co
+      secretName: cf-origin
