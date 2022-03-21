@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: dnsy-storage-pvc
+  name: dnsy-api-storage-pvc
   namespace: dnsy
 spec:
   accessModes:
