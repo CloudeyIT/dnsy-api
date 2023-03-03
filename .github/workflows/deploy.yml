@@ -29,7 +29,6 @@ jobs:
         namespace: dnsy
         manifests: |
           manifests/deployment.yaml
-          manifests/pvc.yaml
           manifests/ingress.yaml
           manifests/service.yaml
         images: ghcr.io/cloudeyit/dnsy-api:${{ github.sha }}
