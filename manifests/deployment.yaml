@@ -21,9 +21,6 @@ spec:
       - name: dnsy-api
         image: ghcr.io/cloudeyit/dnsy-api:latest
         imagePullPolicy: Always
-        volumeMounts:
-          - name: dnsy-api-storage
-            mountPath: /storage
         envFrom:
           - configMapRef:
               name: dnsy-api-config
@@ -45,7 +42,3 @@ spec:
       restartPolicy: Always
       imagePullSecrets:
         - name: regcred-ghcr
-      volumes:
-        - name: dnsy-api-storage
-          persistentVolumeClaim:
-            claimName: dnsy-api-storage-pvc

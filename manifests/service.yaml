@@ -4,8 +4,6 @@ metadata:
   name: dnsy-api-service
   namespace: dnsy
 spec:
-  ipFamilies:
-    - IPv4
   ports:
     - name: http
       port: 80

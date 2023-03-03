@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: dnsy-api-ingress
   namespace: dnsy
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
 spec:
   rules:
     - host: api.dnsy.co
@@ -18,4 +20,3 @@ spec:
   tls:
     - hosts:
         - api.dnsy.co
-      secretName: cf-origin
