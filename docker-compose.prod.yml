@@ -1,0 +1,14 @@
+﻿version: '3.8'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    pull_policy: build
+    env_file:
+      - stack.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dnsy-api_api.tls=true"
+      - "traefik.http.routers.dnsy-api_api.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.dnsy-api_api.rule=Host(`api.dnsy.co`)"
